@@ -14,5 +14,14 @@ bool equalPaths(Node * root)
 {
     // Add your code below
 
+    if (root == NULL){
+        return true;
+    }
+
+    int leftSize = (equalPaths(root->left));
+    int rightSize =
+
+    return false;
+
 }
 
