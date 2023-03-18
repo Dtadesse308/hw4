@@ -6,6 +6,7 @@
 
 #ifndef RECCHECK
 #include <cstdlib>
+#include <iostream>
 #endif
 
 struct Node {
@@ -28,5 +29,7 @@ struct Node {
  * @param root Pointer to the root of the tree to check for equal paths
  */
 bool equalPaths(Node * root);
+
+int getHeight(Node* root, bool& valid);
 
 #endif
