@@ -200,7 +200,7 @@ public:
     void clear(); //TODO
     void clear(Node<Key, Value>* current); //for recursion
     bool isBalanced() const; //TODO
-    void isBalanced(Node<Key, Value>* temp_, bool& balance_) ;
+   // void isBalanced(Node<Key, Value>* temp_, bool& balance_) ;
     void print() const;
     bool empty() const; 
 
@@ -773,12 +773,12 @@ bool BinarySearchTree<Key, Value>::isBalanced() const
     bool balance = true;
     Node<Key, Value>* temp = root_;
 
-    isBlanaced(&temp, &balance);
+   // isBalanced(&temp, &balance);
 
     return balance;
     
 }
-
+/*
 template<typename Key, typename Value>
 void BinarySearchTree<Key, Value>::isBalanced(Node<Key, Value>* temp_, bool& balance_) 
 {
@@ -787,7 +787,7 @@ void BinarySearchTree<Key, Value>::isBalanced(Node<Key, Value>* temp_, bool& bal
     
 }
 
-
+*/
 
 template<typename Key, typename Value>
 void BinarySearchTree<Key, Value>::nodeSwap( Node<Key,Value>* n1, Node<Key,Value>* n2)
