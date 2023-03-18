@@ -13,7 +13,7 @@
  * search trees, such as Red Black trees, Splay trees,
  * and AVL trees.
  */
-template <typename Key, typename Value>
+//template <typename Key, typename Value>
 class Node
 {
 public:
