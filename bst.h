@@ -541,6 +541,7 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
         return;
     }
     Node<Key, Value>* temp = internalFind(key);
+
     if (temp == NULL){          //if key dne
         return;
     }
@@ -549,12 +550,13 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
     if ( (temp->getLeft() == NULL) && (temp->getRight() == NULL) )  {       //if leaf node just remove
 
         if (temp->getParent() != NULL){
-             Node<Key, Value>* parent = temp->getParent();  
-            if (parent->getKey() > temp->getKey()){
+             Node<Key, Value>* parent = temp->getParent(); 
+
+            if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){
                 parent->setLeft(NULL);
                           
             }
-            else {
+            else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
                 parent->setRight(NULL);
                 
             }
@@ -570,10 +572,21 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
 
     else if ( (temp->getLeft() != NULL) && (temp->getRight() == NULL) ) {       //only left node
     child = temp->getLeft();
+    
         if (temp->getParent() != NULL){
-            child = temp->getLeft();
-            child->setParent(temp->getParent());
-            temp->getParent()->setLeft(child);
+            Node<Key, Value>* parent = temp->getParent();
+
+            child->setParent(parent);
+
+            if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){
+                parent->setLeft(child);
+                          
+            }
+            else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
+                parent->setRight(child);
+                
+            }
+           // temp->getParent()->setLeft(child);
            
         }
         else {
@@ -586,9 +599,19 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
 
     else if ( (temp->getLeft() == NULL) && (temp->getRight() != NULL) ){        //only right child
     child = temp->getRight();
-        if (temp->getParent() != NULL){         
+    
+        if (temp->getParent() != NULL){    
+            Node<Key, Value>* parent = temp->getParent();     
             child->setParent(temp->getParent());
-            temp->getParent()->setRight(child);
+
+            if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){
+                parent->setLeft(child);
+                          
+            }
+            else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
+                parent->setRight(child);
+                
+            }
             
         }
         else {
@@ -601,15 +624,16 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
     }   
 
     else if ( (temp->getLeft() != NULL) && (temp->getRight() != NULL) ){         //if both children
-    Node<Key, Value>* pred = predecessor(temp);
+        Node<Key, Value>* pred = predecessor(temp);
         nodeSwap(temp,pred);
+        Node<Key, Value>* parent = temp->getParent(); 
 
         if ( (temp->getLeft() == NULL) && (temp->getRight() == NULL)){
 
-                if (temp->getParent()->getRight() == temp){
+                if (temp->getParent()->getRight()->getKey() == temp->getKey()){
                     temp->getParent()->setRight(NULL);
                 }
-                else {
+                else if (temp->getParent()->getLeft()->getKey() == temp->getKey()) {
                     temp->getParent()->setLeft(NULL);
                 }
 
@@ -617,11 +641,32 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
             
         }
         else {
-            if (temp->getLeft() != NULL){
-                temp->getParent()->setRight(temp->getLeft()); 
+            
+            if (temp->getLeft() != NULL){       //if Left child
+                child = temp->getLeft();
+                child->setParent(parent);
+                if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){        //here
+                    parent->setLeft(child);
+                            
+                }
+                else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
+                    parent->setRight(child);
+                    
+                }
+            
+                
             }   
-            else {
-                temp->getParent()->setRight(NULL); 
+            else  {      
+                
+                if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){
+                    parent->setLeft(NULL);
+                            
+                }
+                else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
+                    parent->setRight(NULL);
+                    
+                }
+            
             }
             
         }   
@@ -771,7 +816,7 @@ bool BinarySearchTree<Key, Value>::isBalanced() const
 {
     // TODO
     bool balance = true;
-    Node<Key, Value>* temp = root_;
+   // Node<Key, Value>* temp = root_;
 
    // isBalanced(&temp, &balance);
 
