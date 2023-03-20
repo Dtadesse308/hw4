@@ -5,7 +5,7 @@
 #include <exception>
 #include <cstdlib>
 #include <utility>
-
+#include <algorithm>
 /**
  * A templated class for a Node in a search tree.
  * The getters for parent/left/right are virtual so
@@ -200,7 +200,7 @@ public:
     void clear(); //TODO
     void clear(Node<Key, Value>* current); //for recursion
     bool isBalanced() const; //TODO
-   // void isBalanced(Node<Key, Value>* temp_, bool& balance_) ;
+    int isBalanced(Node<Key, Value>* temp_, bool& balance_) const;
     void print() const;
     bool empty() const; 
 
@@ -630,10 +630,10 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
 
         if ( (temp->getLeft() == NULL) && (temp->getRight() == NULL)){
 
-                if (temp->getParent()->getRight()->getKey() == temp->getKey()){
+                if (temp->getParent()->getRight() == temp){
                     temp->getParent()->setRight(NULL);
                 }
-                else if (temp->getParent()->getLeft()->getKey() == temp->getKey()) {
+                else if (temp->getParent()->getLeft() == temp) {
                     temp->getParent()->setLeft(NULL);
                 }
 
@@ -645,11 +645,11 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
             if (temp->getLeft() != NULL){       //if Left child
                 child = temp->getLeft();
                 child->setParent(parent);
-                if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){        //here
+                if ( (parent->getLeft() != NULL) &&  (parent->getLeft() == temp ) ){        //here
                     parent->setLeft(child);
                             
                 }
-                else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
+                else if ((parent->getRight() != NULL) &&  (parent->getRight() == temp )) {      //here
                     parent->setRight(child);
                     
                 }
@@ -658,11 +658,11 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
             }   
             else  {      
                 
-                if ( (parent->getLeft() != NULL) &&  (parent->getLeft()->getKey() == temp->getKey() ) ){
+                if ( (parent->getLeft() != NULL) &&  (parent->getLeft() == temp ) ){    //here
                     parent->setLeft(NULL);
                             
                 }
-                else if ((parent->getRight() != NULL) &&  (parent->getRight()->getKey() == temp->getKey() )) {
+                else if ((parent->getRight() != NULL) &&  (parent->getRight() == temp )) {  //here
                     parent->setRight(NULL);
                     
                 }
@@ -816,23 +816,40 @@ bool BinarySearchTree<Key, Value>::isBalanced() const
 {
     // TODO
     bool balance = true;
-   // Node<Key, Value>* temp = root_;
-
-   // isBalanced(&temp, &balance);
+    Node<Key, Value>* temp = root_;
+    
+   isBalanced(temp, balance);
 
     return balance;
     
 }
-/*
+
 template<typename Key, typename Value>
-void BinarySearchTree<Key, Value>::isBalanced(Node<Key, Value>* temp_, bool& balance_) 
+int BinarySearchTree<Key, Value>::isBalanced(Node<Key, Value>* temp_, bool& balance_) const
 {
     // TODO
+    int leftH;
+    int rightH;
+
+    if (temp_ == NULL){
+        return 0;
+    }
+
+   leftH = isBalanced(temp_->getLeft(),balance_);
+   rightH = isBalanced(temp_->getRight(),balance_);
+
+     if ( abs(leftH-rightH) > 1){
+          balance_ = false;
+          
+        return -1;
+     }
+
+   return ( 1+ (std::max(leftH,rightH)));
     
     
 }
 
-*/
+
 
 template<typename Key, typename Value>
 void BinarySearchTree<Key, Value>::nodeSwap( Node<Key,Value>* n1, Node<Key,Value>* n2)
