@@ -5,7 +5,7 @@
 
 #include "equal-paths.h"
 #include <algorithm>
-using namespace std;
+//using namespace std;
 
 
 // You may add any prototypes of helper functions here
@@ -54,7 +54,7 @@ int getHeight(Node* root, bool& valid){
             valid = false;
         }
     }
-    return ( 1+ (max(leftHight,rightHight)));
+    return ( 1+ (std::max(leftHight,rightHight)));
 
 
 
