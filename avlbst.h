@@ -328,25 +328,30 @@ void AVLTree<Key, Value>::remove(const Key &key)
     }
     AVLNode<Key, Value> *child = NULL;
 
+     if ((temp->getLeft() != NULL) && (temp->getRight() != NULL))
+    { // if both children
+        AVLNode<Key, Value> *pred = static_cast<AVLNode<Key, Value> *>(this->predecessor(temp));
+        nodeSwap(temp, pred);
+    }
 
     //for AVL implementation 
     int diff;
     AVLNode<Key, Value>* AVLparent = temp->getParent();
+    
     if (AVLparent != NULL){
         if ((AVLparent->getLeft() != NULL) && (AVLparent->getLeft() == temp))
         {
             diff = 1;
         }
-    else if ((AVLparent->getRight() != NULL) && (AVLparent->getRight() == temp))
+     else if ((AVLparent->getRight() != NULL) && (AVLparent->getRight() == temp))
         {
             diff = -1;
         }
-    AVLparent->updateBalance(diff);
+  
     }
 
 
-     
-
+    
 
 
     if ((temp->getLeft() == NULL) && (temp->getRight() == NULL))
@@ -371,7 +376,7 @@ void AVLTree<Key, Value>::remove(const Key &key)
        
     }
 
-    else if ((temp->getLeft() != NULL) && (temp->getRight() == NULL))
+    if ((temp->getLeft() != NULL) && (temp->getRight() == NULL))
     { // only left node
         child = temp->getLeft();
 
@@ -398,7 +403,7 @@ void AVLTree<Key, Value>::remove(const Key &key)
         }
     }
 
-    else if ((temp->getLeft() == NULL) && (temp->getRight() != NULL))
+    if ((temp->getLeft() == NULL) && (temp->getRight() != NULL))
     { // only right child
         child = temp->getRight();
 
@@ -423,54 +428,10 @@ void AVLTree<Key, Value>::remove(const Key &key)
         }
     }
 
-    else if ((temp->getLeft() != NULL) && (temp->getRight() != NULL))
-    { // if both children
-        AVLNode<Key, Value> *pred = static_cast<AVLNode<Key, Value> *>(this->predecessor(temp));
-        nodeSwap(temp, pred);
-        AVLNode<Key, Value> *parent = temp->getParent();
+    
 
-        if ((temp->getLeft() == NULL) && (temp->getRight() == NULL))
-        {
-
-            if (temp->getParent()->getRight() == temp)
-            {
-                temp->getParent()->setRight(NULL);
-            }
-            else if (temp->getParent()->getLeft() == temp)
-            {
-                temp->getParent()->setLeft(NULL);
-            }
-        }
-        else
-        {
-
-            if (temp->getLeft() != NULL)
-            { // if Left child
-                child = temp->getLeft();
-                child->setParent(parent);
-                if ((parent->getLeft() != NULL) && (parent->getLeft() == temp))
-                { 
-                    parent->setLeft(child);
-                }
-                else if ((parent->getRight() != NULL) && (parent->getRight() == temp))
-                { 
-                    parent->setRight(child);
-                }
-            }
-            else
-            {
-
-                if ((parent->getLeft() != NULL) && (parent->getLeft() == temp))
-                { 
-                    parent->setLeft(NULL);
-                }
-                else if ((parent->getRight() != NULL) && (parent->getRight() == temp))
-                { 
-                    parent->setRight(NULL);
-                }
-            }
-        }
-    }
+        
+    
 
 
 
@@ -504,7 +465,7 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value> *node, int diff)
 
    AVLNode<Key,Value>* p = node->getParent();
    
-
+    
    int ndiff;
    if (p != NULL){
 
@@ -518,22 +479,76 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value> *node, int diff)
 
    }
 
-    if (diff == -1 || diff == 1) {
 
-        if (node->getBalance() == 2){       //case 1
+
+    if (diff == -1) {     
+          
+     if ( (node->getBalance() + diff) == -2){       //case alt1
+            AVLNode<Key,Value>* child = node->getLeft();
+            if (child->getBalance() == -1){  //case 1a, zig zig
+                rotateRight(node);
+                node->setBalance(0);
+                child->setBalance(0);
+                removeFix(p,ndiff);
+           
+            } 
+            
+            else if (child->getBalance() == 0){  //case 1b, zig zig
+                rotateRight(node);
+                node->setBalance(-1);
+                child->setBalance(1);
+            } 
+        else if (child->getBalance() == 1){  //case 1c, zig zag
+                AVLNode<Key,Value>* g = child->getRight();
+                rotateLeft(child); //
+                rotateRight(node);
+
+                if (g->getBalance() == 1){
+                    node->setBalance(0);
+                    child->setBalance(-1);
+                }
+                else if (g->getBalance() == 0){
+                    node->setBalance(0);
+                    child->setBalance(0);
+                }
+                else if (g->getBalance() == -1){
+                    node->setBalance(1);
+                    child->setBalance(0);
+                }
+                g->setBalance(0);
+                removeFix(p,ndiff);
+
+            } 
+            
+
+        } 
+    
+            else if (node->getBalance() + diff == -1){
+                node->setBalance(-1);
+            }
+           
+            else if (node->getBalance() + diff == 0){
+                node->setBalance(0);
+                removeFix(p,ndiff);
+                
+            }
+            
+        }
+    else if (diff == 1){
+
+        if (node->getBalance() + diff == 2){       //case 1
             AVLNode<Key,Value>* child = node->getRight();
-        
             if (child->getBalance() == 1){  //case 1a, zig zig
                 rotateLeft(node);
                 node->setBalance(0);
                 child->setBalance(0);
                 removeFix(p,ndiff);
+
             } 
             else if (child->getBalance() == 0){  //case 1b, zig zag
                 rotateLeft(node);
                 node->setBalance(1);
                 child->setBalance(-1);
-
             } 
         
         else if (child->getBalance() == -1){  //case 1a, zig zag
@@ -558,60 +573,18 @@ void AVLTree<Key, Value>::removeFix(AVLNode<Key, Value> *node, int diff)
 
             } 
     }
-    else if (node->getBalance() == -2){       //case alt1
-            AVLNode<Key,Value>* child = node->getLeft();
-            if (child->getBalance() == -1){  //case 1a, zig zig
-                rotateRight(node);
-                node->setBalance(0);
-                child->setBalance(0);
-                removeFix(p,ndiff);
 
-            } 
-            
-            else if (child->getBalance() == 0){  //case 1b, zig zig
-                rotateRight(node);
-                node->setBalance(-1);
-                child->setBalance(1);
-
-            } 
-        else if (child->getBalance() == 1){  //case 1c, zig zag
-                AVLNode<Key,Value>* g = child->getRight();
-                rotateLeft(child);
-                rotateRight(node);
-
-                if (g->getBalance() == 1){
-                    node->setBalance(0);
-                    child->setBalance(-1);
-                }
-                else if (g->getBalance() == 0){
-                    node->setBalance(0);
-                    child->setBalance(0);
-                }
-                else if (g->getBalance() == -1){
-                    node->setBalance(1);
-                    child->setBalance(0);
-                }
-                g->setBalance(0);
-                removeFix(p,ndiff);
-
-            } 
-            
-
-        } 
-    
-            else if (node->getBalance() == -1){
+           
+            else if (node->getBalance() + diff == 1){
                 node->setBalance(1);
             }
-            else if (node->getBalance() == 1){
-                node->setBalance(-1);
-            }
-            else if (node->getBalance() == 0){
+            else if (node->getBalance() + diff == 0){
                 node->setBalance(0);
                 removeFix(p,ndiff);
             }
             
-        }
 
+    }
    
         
 }
