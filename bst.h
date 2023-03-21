@@ -519,11 +519,7 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 
         }
 
-        // if (!exist){
-        //     temp = new Node<Key, Value>(keyValuePair.first, keyValuePair.second, parent);
-        // }
-        
-        
+
     }
 }
 
@@ -536,6 +532,7 @@ void BinarySearchTree<Key, Value>::insert(const std::pair<const Key, Value> &key
 template<typename Key, typename Value>
 void BinarySearchTree<Key, Value>::remove(const Key& key)
 {
+    
     // TODO
     if (root_ == NULL){     //empty tree
         return;
