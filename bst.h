@@ -544,6 +544,12 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
     }
     Node<Key, Value>* child = NULL;
 
+     if ((temp->getLeft() != NULL) && (temp->getRight() != NULL))
+    { // if both children
+        Node<Key, Value> *pred = predecessor(temp);
+        nodeSwap(temp, pred);
+    }
+
     if ( (temp->getLeft() == NULL) && (temp->getRight() == NULL) )  {       //if leaf node just remove
 
         if (temp->getParent() != NULL){
@@ -567,7 +573,7 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
             return;
     }    
 
-    else if ( (temp->getLeft() != NULL) && (temp->getRight() == NULL) ) {       //only left node
+    if ( (temp->getLeft() != NULL) && (temp->getRight() == NULL) ) {       //only left node
     child = temp->getLeft();
     
         if (temp->getParent() != NULL){
@@ -594,7 +600,7 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
         
     }   
 
-    else if ( (temp->getLeft() == NULL) && (temp->getRight() != NULL) ){        //only right child
+    if ( (temp->getLeft() == NULL) && (temp->getRight() != NULL) ){        //only right child
     child = temp->getRight();
     
         if (temp->getParent() != NULL){    
@@ -620,55 +626,13 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
         
     }   
 
-    else if ( (temp->getLeft() != NULL) && (temp->getRight() != NULL) ){         //if both children
-        Node<Key, Value>* pred = predecessor(temp);
-        nodeSwap(temp,pred);
-        Node<Key, Value>* parent = temp->getParent(); 
-
-        if ( (temp->getLeft() == NULL) && (temp->getRight() == NULL)){
-
-                if (temp->getParent()->getRight() == temp){
-                    temp->getParent()->setRight(NULL);
-                }
-                else if (temp->getParent()->getLeft() == temp) {
-                    temp->getParent()->setLeft(NULL);
-                }
-
-         
+    
             
-        }
-        else {
             
-            if (temp->getLeft() != NULL){       //if Left child
-                child = temp->getLeft();
-                child->setParent(parent);
-                if ( (parent->getLeft() != NULL) &&  (parent->getLeft() == temp ) ){        //here
-                    parent->setLeft(child);
-                            
-                }
-                else if ((parent->getRight() != NULL) &&  (parent->getRight() == temp )) {      //here
-                    parent->setRight(child);
-                    
-                }
             
-                
-            }   
-            else  {      
-                
-                if ( (parent->getLeft() != NULL) &&  (parent->getLeft() == temp ) ){    //here
-                    parent->setLeft(NULL);
-                            
-                }
-                else if ((parent->getRight() != NULL) &&  (parent->getRight() == temp )) {  //here
-                    parent->setRight(NULL);
-                    
-                }
-            
-            }
-            
-        }   
-            
-        }
+        
+        
+        
 
 
            if (temp->getKey() == root_->getKey()){
