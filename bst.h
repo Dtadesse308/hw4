@@ -550,6 +550,15 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
         nodeSwap(temp, pred);
     }
 
+    
+    // TODO
+
+     if ((temp->getLeft() != NULL) && (temp->getRight() != NULL))
+    { // if both children
+        Node<Key, Value> *pred = predecessor(temp);
+        nodeSwap(temp, pred);
+    }
+
     if ( (temp->getLeft() == NULL) && (temp->getRight() == NULL) )  {       //if leaf node just remove
 
         if (temp->getParent() != NULL){
@@ -570,10 +579,10 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
            // temp = NULL;
 
 
-            return;
+        
     }    
 
-    if ( (temp->getLeft() != NULL) && (temp->getRight() == NULL) ) {       //only left node
+    else if ( (temp->getLeft() != NULL) && (temp->getRight() == NULL) ) {       //only left node
     child = temp->getLeft();
     
         if (temp->getParent() != NULL){
@@ -600,7 +609,7 @@ void BinarySearchTree<Key, Value>::remove(const Key& key)
         
     }   
 
-    if ( (temp->getLeft() == NULL) && (temp->getRight() != NULL) ){        //only right child
+    else if ( (temp->getLeft() == NULL) && (temp->getRight() != NULL) ){        //only right child
     child = temp->getRight();
     
         if (temp->getParent() != NULL){    
